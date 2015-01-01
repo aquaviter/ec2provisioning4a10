@@ -1,4 +1,4 @@
-# Provision EC2 script
+# Provision EC2 Instance Script
 
 You can provision EC2 instance running on AWS to A10 networks load balancer.
 
