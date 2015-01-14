@@ -23,12 +23,6 @@ session_id=`curl -v $cmd_options $url \
  -d password=a10 | \
  sed -n -e 's/.*<session_id>\(.*\)<\/session_id>.*/\1/p'`
 
-# ホスト名の取得
-hostname=`curl -v $cmd_options $url \
- -d session_id=$session_id \
- -d method=system.hostname.get | \
- sed -n -e 's/.*<hostname>\(.*\)<\/hostname>.*/\1/p'`
-
 #自分のプライベートIPアドレス取得
 my_ip=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
 my_instanceid=`curl http://169.254.169.254/latest/meta-data/instance-id`
