@@ -18,7 +18,7 @@ url="https://$a10_ip/services/rest/V2/"
 queue_url="https://ap-northeast-1.queue.amazonaws.com/640175474045/websvtermination"
 
 # Queueのメッセージを取得
-message=`aws sqs receive-message --queue-url=$queue_url --output=text | sed -n -e 's/.*{\(.*\)}.*/\1/p'`
+message=`aws sqs receive-message --queue-url=$queue_url --output=text | awk '{print $2}' | sed -n -e 's/.*{\(.*\)}.*/\1/p'`
 
 # Queueにメッセージが無かったら終了
 if [ -z "$message" ] then
@@ -30,6 +30,10 @@ ag_name=`echo $message | awk -F',' '{print $1}' | awk -F':' '{print $2'} | sed -
 token=`echo $message | awk -F',' '{print $7}' | awk -F':' '{print $2'} | sed -e s/\"//g`
 instanceid=`echo $message | awk -F',' '{print $8}' | awk -F':' '{print $2'} | sed -e s/\"//g`
 lifecycle_name=`echo $message | awk -F',' '{print $9}' | awk -F':' '{print $2'} | sed -e s/\"//g`
+
+# QueueからReceit Handleをメッセージを削除
+receipt_handle=`echo $message | awk -F'\t' '{print $5}'` 
+aws sqs delete-message --queue-url $queue_url --receipt-handle $receipt_handle
 
 # TLSv1と証明書チェックをスキップするためのオプション
 cmd_options='--tlsv1.0 --insecure'
