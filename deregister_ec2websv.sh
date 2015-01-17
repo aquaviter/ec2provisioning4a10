@@ -31,7 +31,7 @@ token=`echo $message | awk -F',' '{print $7}' | awk -F':' '{print $2'} | sed -e 
 instanceid=`echo $message | awk -F',' '{print $8}' | awk -F':' '{print $2'} | sed -e s/\"//g`
 lifecycle_name=`echo $message | awk -F',' '{print $9}' | awk -F':' '{print $2'} | sed -e s/\"//g`
 
-# QueueからReceit Handleをメッセージを削除
+# QueueからReceit Handleを取得し、Queueの中のメッセージを削除
 receipt_handle=`echo $message | awk -F'\t' '{print $5}'` 
 aws sqs delete-message --queue-url $queue_url --receipt-handle $receipt_handle
 
@@ -44,7 +44,7 @@ session_id=`curl -v $cmd_options $url \
  -d username=admin \
  -d password=a10 | \
  sed -n -e 's/.*<session_id>\(.*\)<\/session_id>.*/\1/p'`
-a
+
 # ロードバランサに登録されているIPアドレス取得
 ip=`curl -v -X GET $cmd_options $url \
     -d session_id=$session_id \
